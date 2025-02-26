@@ -178,8 +178,17 @@ maryland_winred_categories <- maryland_winred_contributions |>
         amount >= 1500 & amount < 3000 ~ "Between $500 and $2999",
         amount >= 3000 ~ "$3,000 or more"
       )
-  )
+  )|>     
 head(maryland_winred_categories)
+ 
+group_by(amoutn_category) |>
+summarise (
+  contributions = n()
+) |>
+mutate( 
+percent=(contributions/sum(contributions)*100)
+  )
+
 ```
 
 There's a lot going on here, so let's unpack it. It starts out as a typical mutate statement, but case_when introduces some new things. Each line is basically a conditional filter followed by `~` and then a value for the new column for records that match that filter. Here is [more detail](https://www.sharpsightlabs.com/blog/case-when-r/) on using `case_when`.
@@ -222,7 +231,15 @@ The data we want to filter on is in `county_name`. So we're going to use filter 
 prince_georges <- primary_24 |> filter(county_name == "Prince George's County")
 
 head(prince_georges)
+
+
+library(lubridate)
+maryland_expenses |>
+  mutate(new_expanditure_date= mdy(expenditure_date))
+
+
 ```
+
 
 And just like that, we have just Prince George's results, which we can verify looking at the head, the first six rows.
 
